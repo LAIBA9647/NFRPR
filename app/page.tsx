@@ -343,7 +343,7 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zM8 6a2 2 0 114 0v2H8V6z" clipRule="evenodd" />
                 </svg>
-                <span>Secure & Private</span>
+                <span>Secure &amp; Private</span>
               </div>
 
               {/* Professional Grade */}
@@ -385,7 +385,7 @@ export default function Home() {
             {/* Card 1 - Sarah Mitchell */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -428,7 +428,7 @@ export default function Home() {
             {/* Card 2 - James Thompson */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -470,7 +470,7 @@ export default function Home() {
             {/* Card 3 - Emma Roberts */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -483,7 +483,7 @@ export default function Home() {
               
               {/* Testimonial text */}
               <p className="text-gray-700 italic mb-6 leading-relaxed">
-                The detailed recommendations helped us identify areas for improvement we hadn't considered. The report format was perfect for our local authority inspection.
+                The detailed recommendations helped us identify areas for improvement we hadn&rsquo;t considered. The report format was perfect for our local authority inspection.
               </p>
               
               {/* Person info */}
@@ -544,7 +544,7 @@ export default function Home() {
 
           {/* Trusted & Certified */}
           <section className="mt-16">
-            <h4 className="text-2xl font-bold text-gray-900 text-center">Trusted & Certified</h4>
+            <h4 className="text-2xl font-bold text-gray-900 text-center">Trusted &amp; Certified</h4>
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {/* UK Fire Safety Certified */}
               <div className="flex flex-col items-center text-center">
@@ -625,7 +625,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <div className="text-left sm:text-center">
-                  <h5 className="font-semibold text-green-700">Secure & Confidential</h5>
+                  <h5 className="font-semibold text-green-700">Secure &amp; Confidential</h5>
                   <p className="mt-2 text-sm text-gray-700">
                     All assessment data is encrypted and stored securely. We never share your information with third parties. Your privacy and data security are our top priorities.
                   </p>
