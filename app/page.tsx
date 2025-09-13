@@ -3,14 +3,38 @@
 import Image from 'next/image';
 import HowItWorks from './components/HowItWorks';
 import Header from './components/Header';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+  const [testimonials, setTestimonials] = useState<Array<{ name: string; role: string; company: string; rating: number; text: string; category: string; initials?: string }>>([]);
+  const [stats, setStats] = useState<{ rating: number; approval: number; compliance: number } | null>(null);
 
   const toggleFAQ = (index: number) => {
     setOpenFAQ(openFAQ === index ? null : index);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [tRes, sRes] = await Promise.all([
+          fetch('/api/testimonials'),
+          fetch('/api/stats'),
+        ]);
+        if (tRes.ok) {
+          const tJson = await tRes.json();
+          setTestimonials(Array.isArray(tJson) ? tJson : []);
+        }
+        if (sRes.ok) {
+          const sJson = await sRes.json();
+          setStats(sJson);
+        }
+      } catch (e) {
+        // ignore network errors for now
+      }
+    };
+    fetchData();
+  }, []);
 
   const faqs = [
     {
@@ -343,7 +367,7 @@ export default function Home() {
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zM8 6a2 2 0 114 0v2H8V6z" clipRule="evenodd" />
                 </svg>
-                <span>Secure &amp; Private</span>
+                <span>Secure & Private</span>
               </div>
 
               {/* Professional Grade */}
@@ -380,12 +404,49 @@ export default function Home() {
             Join thousands of UK property owners and managers who trust our fire safety assessment
             platform.
           </p>
-          {/* Testimonial Cards */}
+          {/* Testimonial Cards (dynamic if available) */}
+          {testimonials.length > 0 && (
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-stretch text-left">
+              {testimonials.map((t, idx) => (
+                <div key={idx} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
+                  <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
+                  <div className="flex items-center gap-1 text-yellow-400 mb-4">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <svg key={i} className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.801 2.034a1 1 0 0 0 -.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.801-2.034a1 1 0 0 0 -1.175 0l-2.801 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0 -.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-gray-700 italic mb-6 leading-relaxed">{t.text}</p>
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-4 overflow-hidden">
+                      <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 rounded-full flex items-center justify-center">
+                        <span className="text-white font-semibold text-lg">{t.initials || t.name.split(' ').map(p => p[0]).slice(0,2).join('').toUpperCase()}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">{t.name}</div>
+                      <div className="text-sm text-gray-600">{t.role}</div>
+                      <div className="text-sm text-gray-600">{t.company}</div>
+                    </div>
+                  </div>
+                  <div className="mt-auto flex items-center text-green-600">
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.707 2.293a1 1 0 0 0 -1.414 0l-7 7a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414l-7-7z" />
+                    </svg>
+                    <span className="text-sm font-medium">{t.category}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Static fallback when no testimonials fetched */}
+          {testimonials.length === 0 && (
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-stretch text-left">
             {/* Card 1 - Sarah Mitchell */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -428,7 +489,7 @@ export default function Home() {
             {/* Card 2 - James Thompson */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -470,7 +531,7 @@ export default function Home() {
             {/* Card 3 - Emma Roberts */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm h-full flex flex-col">
               {/* Large quote icon */}
-              <div className="text-6xl text-red-600 font-serif leading-none mb-4">&ldquo;</div>
+              <div className="text-6xl text-red-600 font-serif leading-none mb-4">"</div>
               
               {/* Stars */}
               <div className="flex items-center gap-1 text-yellow-400 mb-4">
@@ -483,7 +544,7 @@ export default function Home() {
               
               {/* Testimonial text */}
               <p className="text-gray-700 italic mb-6 leading-relaxed">
-                The detailed recommendations helped us identify areas for improvement we hadn&rsquo;t considered. The report format was perfect for our local authority inspection.
+                The detailed recommendations helped us identify areas for improvement we hadn't considered. The report format was perfect for our local authority inspection.
               </p>
               
               {/* Person info */}
@@ -509,6 +570,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+          )}
           {/* Growing Trust */}
           <div className="mt-12 max-w-4xl mx-auto rounded-2xl border border-gray-200 bg-white p-8 sm:p-10 shadow-md text-center">
             <h4 className="text-2xl font-bold text-gray-900">Growing Trust</h4>
@@ -522,21 +584,21 @@ export default function Home() {
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-50 text-green-600">
                   <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.801 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.801-2.034a1 1 0 00-1.175 0l-2.801 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-green-600">4.9/5</div>
+                <div className="mt-2 text-2xl font-extrabold text-green-600">{stats ? `${stats.rating}/5` : '4.9/5'}</div>
                 <div className="text-xs text-gray-500">Average Rating</div>
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-50 text-green-600">
                   <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M2 10a2 2 0 012-2h3.28l.94-3.13A2 2 0 0110.16 3h.68c.86 0 1.56.68 1.56 1.53v3.64h3.08a1.5 1.5 0 011.42 2.03l-2.13 6A2 2 0 0113.9 18H7a2 2 0 01-2-2v-4H4a2 2 0 01-2-2z" clipRule="evenodd"/></svg>
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-green-600">98%</div>
+                <div className="mt-2 text-2xl font-extrabold text-green-600">{stats ? `${stats.approval}%` : '98%'}</div>
                 <div className="text-xs text-gray-500">Would Recommend</div>
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-50 text-green-600">
                   <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l6 3v5c0 4.418-3.582 8-8 8s-8-3.582-8-8V5l6-3 2 1 2-1z"/></svg>
                 </div>
-                <div className="mt-2 text-2xl font-extrabold text-green-600">100%</div>
+                <div className="mt-2 text-2xl font-extrabold text-green-600">{stats ? `${stats.compliance}%` : '100%'}</div>
                 <div className="text-xs text-gray-500">Compliance Rate</div>
               </div>
             </div>
@@ -544,7 +606,7 @@ export default function Home() {
 
           {/* Trusted & Certified */}
           <section className="mt-16">
-            <h4 className="text-2xl font-bold text-gray-900 text-center">Trusted &amp; Certified</h4>
+            <h4 className="text-2xl font-bold text-gray-900 text-center">Trusted & Certified</h4>
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {/* UK Fire Safety Certified */}
               <div className="flex flex-col items-center text-center">
@@ -625,7 +687,7 @@ export default function Home() {
                   </svg>
                 </div>
                 <div className="text-left sm:text-center">
-                  <h5 className="font-semibold text-green-700">Secure &amp; Confidential</h5>
+                  <h5 className="font-semibold text-green-700">Secure & Confidential</h5>
                   <p className="mt-2 text-sm text-gray-700">
                     All assessment data is encrypted and stored securely. We never share your information with third parties. Your privacy and data security are our top priorities.
                   </p>
